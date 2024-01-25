@@ -1,20 +1,21 @@
 {
   "name": "frida-native-debugger",
   "version": "1.0.0",
-  "description": "Single-step debugging of native code using frida, talker, and signals",
+  "description": "Single-step debugging of native code using frida, talker, and semaphore",
   "private": false,
-  "main": "agent/index.ts",
+  "main": "agent/main.ts",
   "scripts": {
     "prepare": "npm run build",
-    "build": "frida-compile agent/index.ts -o _agent.js -c",
-    "watch": "frida-compile agent/index.ts -o _agent.js -w"
+    "build": "frida-compile agent/main.ts -o _agent.js -c",
+    "watch": "frida-compile agent/main.ts -o _agent.js -w"
   },
   "devDependencies": {
     "@types/frida-gum": "^18.5.1",
     "@types/node": "^18.14.0",
-    "frida-compile": "^16.4.1"
+    "frida-compile": "10.0.0"
   },
   "dependencies": {
+    "frida-il2cpp-bridge": "^0.9.0",
     "ts-transformer-inline-file": "^0.2.0"
   }
 }
