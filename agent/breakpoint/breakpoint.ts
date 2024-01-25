@@ -42,7 +42,7 @@ export class BreakPoint {
 
     static continueThread = (thread_id: number = BPStatus.currentThreadId) => {
         Stalker.unfollow(thread_id)
-        Signal.sem_post_threadid(thread_id)
+        Signal.sem_post_thread_id(thread_id)
         BPStatus.breakpoints.delete(BPStatus.currentPC.get(thread_id)!)
         BPStatus.currentThreadId = 0
         BPStatus.setPaused(thread_id, false)
@@ -105,6 +105,9 @@ export class BreakPoint {
     private static CalloutInner = (context: CpuContext) => {
         // clear()
         const currentPC: NativePointer = context.pc
+
+        // todo moduleFilters implement
+
         const thread_id: number = Process.getCurrentThreadId()
         BPStatus.addThreadContext(thread_id, context.pc, context)
         BPStatus.currentPC.set(thread_id, currentPC)
@@ -112,7 +115,7 @@ export class BreakPoint {
         BPStatus.setPaused(thread_id, true)
         if (BPStatus.breakpoints.has(currentPC.sub(4 * 4))) {
             logw(`Hit breakpoint at ${DebugSymbol.fromAddress(currentPC)} | ${Instruction.parse(currentPC)}`)
-            Signal.sem_post_threadid(thread_id)
+            Signal.sem_post_thread_id(thread_id)
         }
         if (Process.arch == "arm64") {
             BreakPoint.callOutInnerArm64(context as Arm64CpuContext)
@@ -142,7 +145,7 @@ export class BreakPoint {
         const tc = context as Arm64CpuContext
         const currentThread: number = Process.getCurrentThreadId()
         logd(`\n[ ${getThreadName(currentThread)} @ ${currentThread} }\n`)
-        BreakPoint.printRegs(tc)
+        BreakPoint.printRegs(context)
         InstructionParser.printCurrentInstruction(tc.pc)
         BPStatus.getStepActions(currentThread).forEach((action) => action(tc))
         Signal.sem_wait_threadid(currentThread)
