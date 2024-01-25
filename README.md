@@ -2,13 +2,13 @@
 
 b(functionaddress)
 
-s() step 步进 后续改为 si()
+si() step ins 步进
 
-ni() todo ...
+ni() next ins 步过 ( todo ... )
 
-n(mPtr) nop (n命令留给nop)
+n(mPtr) nop
 
-c() continue 放开断点
+c() continue 继续
 
 dism(mPtr) 给定位置反汇编
 

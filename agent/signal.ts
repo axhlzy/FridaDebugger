@@ -46,4 +46,4 @@ export namespace Signal {
 
 Reflect.set(globalThis, "Signal", Signal)
 Reflect.set(globalThis, "step", Signal.continue_instruction)
-Reflect.set(globalThis, "s", Signal.continue_instruction)
+Reflect.set(globalThis, "si", Signal.continue_instruction)

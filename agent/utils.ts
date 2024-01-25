@@ -4,6 +4,8 @@ globalThis.newLine = (lines: number = 1) => {
     for (let i = 0; i < lines; i++) console.log('\n')
 }
 
+globalThis.d = () => { Interceptor.detachAll() }
+
 var nameCountMap: Map<string, number> = new Map()
 export const filterDuplicateOBJ = (objstr: string, maxCount: number = 10) => {
     let count: number | undefined = nameCountMap.get(objstr.toString())
@@ -44,9 +46,13 @@ declare global {
     var newLine: (lines?: number) => void
     var filterDuplicateOBJ: (objstr: string, maxCount?: number) => boolean
     var getThreadName: (tid: number) => string
+    var padding: (str: string | NativePointer, len?: number, pad?: string, end?: boolean) => string
+    var d: () => void
 }
 
 globalThis.clear = clear
 globalThis.newLine = newLine
 globalThis.filterDuplicateOBJ = filterDuplicateOBJ
 globalThis.getThreadName = getThreadName
+globalThis.padding = padding
+globalThis.d = d
