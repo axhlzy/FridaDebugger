@@ -150,7 +150,7 @@ export class BreakPoint {
         BreakPoint.printRegs(context)
         InstructionParser.printCurrentInstruction(tc.pc)
         BPStatus.getStepActions(currentThread).forEach((action) => action(tc))
-        BreakPoint.BackTraceBySystem()
+        // BreakPoint.BackTraceBySystem() // recommend using in StepAction not there
         Signal.sem_wait_threadid(currentThread)
     }
 
