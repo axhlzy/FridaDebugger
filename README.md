@@ -1,3 +1,6 @@
+Easy Use： 
+frida --codeshare axhlzy/fridadebugger -U -f ${PackageName}
+
 - 在arm64实现了基本的单个断点的步过和继续
 
 1. b(functionaddress)
