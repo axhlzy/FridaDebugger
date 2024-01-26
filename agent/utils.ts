@@ -1,3 +1,5 @@
+import { logd, logz } from "./logger"
+
 globalThis.clear = () => console.log('\x1Bc')
 
 globalThis.newLine = (lines: number = 1) => {
@@ -32,6 +34,24 @@ export function getThreadName(tid: number) {
     return threadName
 }
 
+export function demangleName(expName: string) {
+    let demangleAddress: NativePointer | null = Module.findExportByName("libc++.so", '__cxa_demangle')
+    if (demangleAddress == null) demangleAddress = Module.findExportByName("libunwindstack.so", '__cxa_demangle')
+    if (demangleAddress == null) demangleAddress = Module.findExportByName("libbacktrace.so", '__cxa_demangle')
+    if (demangleAddress == null) demangleAddress = Module.findExportByName(null, '__cxa_demangle')
+    if (demangleAddress == null) throw Error("can not find export function -> __cxa_demangle")
+    let demangle: Function = new NativeFunction(demangleAddress, 'pointer', ['pointer', 'pointer', 'pointer', 'pointer'])
+    let mangledName: NativePointer = Memory.allocUtf8String(expName)
+    let outputBuffer: NativePointer = NULL
+    let length: NativePointer = NULL
+    let status: NativePointer = Memory.alloc(Process.pageSize)
+    let result: NativePointer = demangle(mangledName, outputBuffer, length, status) as NativePointer
+    if (status.readInt() === 0) {
+        let resultStr: string | null = result.readUtf8String()
+        return (resultStr == null || resultStr == expName) ? "" : resultStr
+    } else return ""
+}
+
 export const padding = (str: string | NativePointer, len: number = 18, pad: string = ' ', end: boolean = true) => {
     if (str instanceof NativePointer) str = str.toString()
     if (str.length >= len) return str
@@ -39,14 +59,26 @@ export const padding = (str: string | NativePointer, len: number = 18, pad: stri
     else return str.padStart(len, pad)
 }
 
+export const packApiResove = (patter: string = "exports:*!*Unwind*") => {
+    let index: number = 0
+    new ApiResolver("module").enumerateMatches(patter).forEach((exp) => {
+        logd(`${padding(`[${++index}]`, 5)}${exp.name} ${exp.address}`)
+        logz(`\t${demangleName(exp.name.split("!")[1])}`)
+    })
+}
+
 declare global {
     var clear: () => void
     var newLine: (lines?: number) => void
     var filterDuplicateOBJ: (objstr: string, maxCount?: number) => boolean
     var getThreadName: (tid: number) => string
+    var demangleName: (expName: string) => string
+    var PD: (str: string | NativePointer, len?: number, pad?: string, end?: boolean) => string
 }
 
 globalThis.clear = clear
 globalThis.newLine = newLine
 globalThis.filterDuplicateOBJ = filterDuplicateOBJ
 globalThis.getThreadName = getThreadName
+globalThis.demangleName = demangleName
+globalThis.PD = padding

@@ -27,7 +27,7 @@ export class InstructionParser {
 
         var ins: Instruction = Instruction.parse(instruction_start)
         do {
-            let ins_str: string = `${DebugSymbol.fromAddress(ins.address)} | ${ins.toString()}`
+            let ins_str: string = `${DebugSymbol.fromAddress(ins.address)} | ${ins.toString()}`.padEnd(30, ' ')
             const ins_op: string = InstructionParser.InsParser(ins.address)
             if (ins_op.length != 0) ins_str += `\t| ${ins_op}`
             ins.address.equals(pc) ? loge(`-> ${ins_str}`) : logz(`   ${ins_str}`)
