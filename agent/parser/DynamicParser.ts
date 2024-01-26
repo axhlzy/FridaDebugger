@@ -6,3 +6,5 @@ export class DynamicParser extends ParserBase {
 
 
 }
+
+Reflect.set(globalThis, "DynamicParser", DynamicParser)

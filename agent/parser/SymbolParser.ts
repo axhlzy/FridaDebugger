@@ -12,3 +12,5 @@ export class SymbolParser extends ParserBase {
         return map.get(this.handle) || ''
     }
 }
+
+Reflect.set(globalThis, "SymbolParser", SymbolParser)

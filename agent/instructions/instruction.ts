@@ -75,4 +75,5 @@ export class InstructionParser {
 Reflect.set(globalThis, "InstructionParser", InstructionParser)
 Reflect.set(globalThis, "ins", InstructionParser)
 
-Reflect.set(globalThis, "dism", (mPtr?: NativePointer) => { InstructionParser.printCurrentInstruction(mPtr) }) // dism
+Reflect.set(globalThis, "dism", (mPtr?: NativePointer, extraIns?: number) => { InstructionParser.printCurrentInstruction(mPtr, extraIns) }) // dism
+Reflect.set(globalThis, "pi", (mPtr?: NativePointer, extraIns?: number) => { InstructionParser.printCurrentInstruction(mPtr, extraIns) }) // dism

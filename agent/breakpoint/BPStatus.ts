@@ -44,6 +44,14 @@ export class BPStatus {
         BPStatus.currentThreadId = thread_id
     }
 
+    static hasPausedThread = (): boolean => {
+        for (const [_key, value] of BPStatus.isPaused) {
+            if (value) return true
+        }
+        return false
+    }
+
+
     static addStepAction = (action: (ctx: CpuContext) => void, thread_id: number = BPStatus.currentThreadId) => {
         let actions: ((ctx: CpuContext) => void)[] | undefined = BPStatus.actionStep.get(thread_id)
         if (actions == undefined) {

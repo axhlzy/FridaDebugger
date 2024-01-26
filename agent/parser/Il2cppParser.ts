@@ -45,3 +45,5 @@ export class Il2cppParser extends ParserBase {
 // export class Transform extends Il2Cpp.Object {
 
 // }
+
+Reflect.set(globalThis, "Il2cppParser", Il2cppParser)

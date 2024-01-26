@@ -16,3 +16,4 @@ export class ArtParser extends ParserBase {
     }
 }
 
+Reflect.set(globalThis, "ArtParser", ArtParser)

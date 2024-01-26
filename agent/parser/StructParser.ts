@@ -11,3 +11,5 @@ export class StructParser extends ParserBase {
         return ''
     }
 }
+
+Reflect.set(globalThis, "StructParser", StructParser)
