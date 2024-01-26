@@ -27,12 +27,12 @@ export class InstructionParser {
 
         var ins: Instruction = Instruction.parse(instruction_start)
         do {
-            // error ins
-            if (ins.toString().includes('udf')) {
-                logl(`   ${DebugSymbol.fromAddress(ins.address)} | [ ${getErrorDisc(ins.address)} ]`)
-                ins = Instruction.parse(ins.address.add(0x4))
-                continue
-            }
+            // // error ins
+            // if (ins.toString().includes('udf')) {
+            //     logl(`   ${DebugSymbol.fromAddress(ins.address)} | [ ${getErrorDisc(ins.address)} ]`)
+            //     ins = Instruction.parse(ins.address.add(0x4))
+            //     continue
+            // }
             let ins_str: string = `${DebugSymbol.fromAddress(ins.address)} | ${ins.toString()}`
             const ins_op: string = InstructionParser.InsParser(ins.address)
             if (ins_op.length != 0) ins_str += `\t| ${ins_op}`
@@ -42,7 +42,7 @@ export class InstructionParser {
                 ins = Instruction.parse(ins.next)
             } catch (error) {
                 logl(`   ${DebugSymbol.fromAddress(ins.next)} | [ ${getErrorDisc(ins.next)} ]`)
-                ins = Instruction.parse(ins.address.add(0x8))
+                ins = Instruction.parse(ins.address.add(0x4))
             }
         } while (--count > 0)
         if (!ret) newLine()

@@ -236,33 +236,30 @@ export class BreakPoint {
         _Unwind_Backtrace(new NativeCallback((ctx: _Unwind_Context_PTR, _arg: NativePointer) => {
             try {
                 const ip: NativePointer = _Unwind_GetIP(ctx) // lr
-                // logd(`Frame ${PD(`# ${++count}`, 5)}\n\t${InstructionParser.printCurrentInstruction(ip, 3)}`)
                 logd(`Frame ${PD(`# ${++count}`, 5)}\n\t${DebugSymbol.fromAddress(ip)} | ${Instruction.parse(ip)}`)
-                // try {
-                //     if (Process.arch == 'arm64') {
-                //         // x19 - x31 (64-bit) Non-Volatile Register
-                //         const x19: NativePointer = _Unwind_GetGR(ctx, 19)
-                //         const x20: NativePointer = _Unwind_GetGR(ctx, 20)
-                //         const x21: NativePointer = _Unwind_GetGR(ctx, 21)
-                //         const x22: NativePointer = _Unwind_GetGR(ctx, 22)
-                //         const x23: NativePointer = _Unwind_GetGR(ctx, 23)
-                //         const x24: NativePointer = _Unwind_GetGR(ctx, 24)
-                //         const x25: NativePointer = _Unwind_GetGR(ctx, 25)
-                //         const x26: NativePointer = _Unwind_GetGR(ctx, 26)
-                //         const x27: NativePointer = _Unwind_GetGR(ctx, 27)
-                //         const x28: NativePointer = _Unwind_GetGR(ctx, 28)
-                //         const fp: NativePointer = _Unwind_GetGR(ctx, 29)
-                //         const lr: NativePointer = _Unwind_GetGR(ctx, 30)
-                //         const sp: NativePointer = _Unwind_GetGR(ctx, 31)
-                //         const cfa: NativePointer = _Unwind_GetCFA(ctx)
-                //         const bsp: NativePointer = _Unwind_GetBSP(ctx)
-                //         logd(`\t${PD(`x19: ${x19}`)} ${PD(`x20: ${x20}`)} ${PD(`x21: ${x21}`)} ${PD(`x22: ${x22}`)} ${PD(`x23: ${x23}`)} ${PD(`x24: ${x24}`)}\n\t${PD(`x25: ${x25}`)} ${PD(`x26: ${x26}`)} ${PD(`x27: ${x27}`)} ${PD(`x28: ${x28}`)}`)
-                //         logd(`\t${PD(`fp: ${fp}`)} ${PD(`lr: ${lr}`)} ${PD(`sp: ${sp}`)} ${PD(`cfa: ${cfa}`)} ${PD(`bsp: ${bsp}`)}`)
-                //     }
-                // } catch (error) {
-                //     loge(`error: ${error}`)
-                // }
+                // InstructionParser.printCurrentInstruction(ip, 5)
+                if (Process.arch == 'arm64') {
+                    // x19 - x31 (64-bit) Non-Volatile Register
+                    const x19: NativePointer = _Unwind_GetGR(ctx, 19)
+                    const x20: NativePointer = _Unwind_GetGR(ctx, 20)
+                    const x21: NativePointer = _Unwind_GetGR(ctx, 21)
+                    const x22: NativePointer = _Unwind_GetGR(ctx, 22)
+                    const x23: NativePointer = _Unwind_GetGR(ctx, 23)
+                    const x24: NativePointer = _Unwind_GetGR(ctx, 24)
+                    const x25: NativePointer = _Unwind_GetGR(ctx, 25)
+                    const x26: NativePointer = _Unwind_GetGR(ctx, 26)
+                    const x27: NativePointer = _Unwind_GetGR(ctx, 27)
+                    const x28: NativePointer = _Unwind_GetGR(ctx, 28)
+                    const fp: NativePointer = _Unwind_GetGR(ctx, 29)
+                    const lr: NativePointer = _Unwind_GetGR(ctx, 30)
+                    // const sp: NativePointer = _Unwind_GetGR(ctx, 31) // misapplication  
+                    const cfa: NativePointer = _Unwind_GetCFA(ctx)
+                    // const bsp: NativePointer = _Unwind_GetBSP(ctx)
+                    logz(`\t${PD(`x19: ${x19}`)} ${PD(`x20: ${x20}`)} ${PD(`x21: ${x21}`)} ${PD(`x22: ${x22}`)} ${PD(`x23: ${x23}`)} ${PD(`x24: ${x24}`)}\n\t${PD(`x25: ${x25}`)} ${PD(`x26: ${x26}`)} ${PD(`x27: ${x27}`)} ${PD(`x28: ${x28}`)}`)
+                    logz(`\t${PD(`fp: ${fp}`)} ${PD(`lr: ${lr}`)} ${PD(`sp: ${cfa}`)}`)
+                }
             } catch {/* end of stack */ }
+            newLine()
             return _Unwind_Reason_Code._URC_NO_REASON
         }, 'int', ['pointer', 'pointer']), NULL)
 
