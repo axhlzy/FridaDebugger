@@ -27,7 +27,13 @@ export class InstructionParser {
 
         var ins: Instruction = Instruction.parse(instruction_start)
         do {
-            let ins_str: string = `${DebugSymbol.fromAddress(ins.address)} | ${ins.toString()}`.padEnd(30, ' ')
+            // error ins
+            if (ins.toString().includes('udf')) {
+                logl(`   ${DebugSymbol.fromAddress(ins.address)} | [ ${getErrorDisc(ins.address)} ]`)
+                ins = Instruction.parse(ins.address.add(0x4))
+                continue
+            }
+            let ins_str: string = `${DebugSymbol.fromAddress(ins.address)} | ${ins.toString()}`
             const ins_op: string = InstructionParser.InsParser(ins.address)
             if (ins_op.length != 0) ins_str += `\t| ${ins_op}`
             ins.address.equals(pc) ? loge(`-> ${ins_str}`) : logz(`   ${ins_str}`)
@@ -35,14 +41,18 @@ export class InstructionParser {
             try {
                 ins = Instruction.parse(ins.next)
             } catch (error) {
-                const bt_array = ins.address.readByteArray(4)!
-                const bt_array_str = Array.from(new Uint8Array(bt_array)).map((item: number) => item.toString(16).padStart(2, '0')).join(' ')
-                logl(`   ${DebugSymbol.fromAddress(ins.address)} | [ ${bt_array_str} ]`)
+                logl(`   ${DebugSymbol.fromAddress(ins.next)} | [ ${getErrorDisc(ins.next)} ]`)
                 ins = Instruction.parse(ins.address.add(0x8))
             }
         } while (--count > 0)
         if (!ret) newLine()
         if (ret) return arrayRet
+
+        function getErrorDisc(mPtr: NativePointer): string {
+            const bt_array = mPtr.readByteArray(4)!
+            const bt_array_str = Array.from(new Uint8Array(bt_array)).map((item: number) => item.toString(16).padStart(2, '0')).join(' ')
+            return bt_array_str
+        }
     }
 
     static InsParser(address: NativePointer): string {

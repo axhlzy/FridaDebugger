@@ -44,7 +44,7 @@ export class BreakPoint {
 
     static continueThread = (thread_id: number = BPStatus.currentThreadId) => {
         Stalker.unfollow(thread_id)
-        Signal.sem_post_threadid(thread_id)
+        Signal.sem_post_thread_id(thread_id)
         BPStatus.breakpoints.delete(BPStatus.currentPC.get(thread_id)!)
         BPStatus.currentThreadId = 0
         BPStatus.setPaused(thread_id, false)
@@ -107,6 +107,9 @@ export class BreakPoint {
     private static CalloutInner = (context: CpuContext) => {
         // clear()
         const currentPC: NativePointer = context.pc
+
+        // todo moduleFilters implement
+
         const thread_id: number = Process.getCurrentThreadId()
         BPStatus.addThreadContext(thread_id, context.pc, context)
         BPStatus.currentPC.set(thread_id, currentPC)
@@ -114,7 +117,7 @@ export class BreakPoint {
         BPStatus.setPaused(thread_id, true)
         if (BPStatus.breakpoints.has(currentPC.sub(4 * 4))) {
             logw(`Hit breakpoint at ${DebugSymbol.fromAddress(currentPC)} | ${Instruction.parse(currentPC)}`)
-            Signal.sem_post_threadid(thread_id)
+            Signal.sem_post_thread_id(thread_id)
         }
         if (Process.arch == "arm64") {
             BreakPoint.callOutInnerArm64(context as Arm64CpuContext)
@@ -125,28 +128,28 @@ export class BreakPoint {
 
     public static printRegs = (context: CpuContext) => {
         if (Process.arch == "arm64") {
-            const thisContext = context as Arm64CpuContext
-            logw(`${PD(`X0: ${thisContext.x0}`)} ${PD(`X1: ${thisContext.x1}`)} ${PD(`X2: ${thisContext.x2}`)} ${PD(`X3: ${thisContext.x3}`)} ${PD(`X4: ${thisContext.x4}`)} ${PD(`X5: ${thisContext.x5}`)} ${PD(`X6: ${thisContext.x6}`)} ${PD(`X7: ${thisContext.x7}`)}`)
-            logw(`${PD(`x8(XR): ${thisContext.x8}`)} ${PD(`X9: ${thisContext.x9}`)} ${PD(`X10: ${thisContext.x10}`)} ${PD(`X11: ${thisContext.x11}`)} ${PD(`X12: ${thisContext.x12}`)} ${PD(`X13: ${thisContext.x13}`)} ${PD(`X14: ${thisContext.x14}`)} ${PD(`X15: ${thisContext.x15}`)}`)
-            logw(`${PD(`X19: ${thisContext.x19}`)} ${PD(`X20: ${thisContext.x20}`)} ${PD(`X21: ${thisContext.x21}`)} ${PD(`X22: ${thisContext.x22}`)} ${PD(`X23: ${thisContext.x23}`)}`)
-            logw(`${PD(`X24: ${thisContext.x24}`)} ${PD(`X25: ${thisContext.x25}`)} ${PD(`X26: ${thisContext.x26}`)} ${PD(`X27: ${thisContext.x27}`)} ${PD(`X28: ${thisContext.x28}`)}`)
-            logw(`${PD(`FP(X29): ${thisContext.fp}`)} ${PD(`LR(X30): ${thisContext.lr}`)} ${PD(`SP(X31): ${thisContext.sp}`)} | ${PD(`PC: ${thisContext.pc}`)}`)
+            const tc = context as Arm64CpuContext
+            logw(`${PD(`X0: ${tc.x0}`)} ${PD(`X1: ${tc.x1}`)} ${PD(`X2: ${tc.x2}`)} ${PD(`X3: ${tc.x3}`)} ${PD(`X4: ${tc.x4}`)} ${PD(`X5: ${tc.x5}`)} ${PD(`X6: ${tc.x6}`)} ${PD(`X7: ${tc.x7}`)}`)
+            logw(`${PD(`x8(XR): ${tc.x8}`)} ${PD(`X9: ${tc.x9}`)} ${PD(`X10: ${tc.x10}`)} ${PD(`X11: ${tc.x11}`)} ${PD(`X12: ${tc.x12}`)} ${PD(`X13: ${tc.x13}`)} ${PD(`X14: ${tc.x14}`)} ${PD(`X15: ${tc.x15}`)}`)
+            logw(`${PD(`X19: ${tc.x19}`)} ${PD(`X20: ${tc.x20}`)} ${PD(`X21: ${tc.x21}`)} ${PD(`X22: ${tc.x22}`)} ${PD(`X23: ${tc.x23}`)}`)
+            logw(`${PD(`X24: ${tc.x24}`)} ${PD(`X25: ${tc.x25}`)} ${PD(`X26: ${tc.x26}`)} ${PD(`X27: ${tc.x27}`)} ${PD(`X28: ${tc.x28}`)}`)
+            logw(`${PD(`FP(X29): ${tc.fp}`)}  ${PD(`LR(X30): ${tc.lr}`)}  ${PD(`SP(X31): ${tc.sp}`)}  |  ${PD(`PC: ${tc.pc}`)}`)
         } else if (Process.arch == "arm") {
-            const thisContext = context as ArmCpuContext
-            logw(`R0: ${PD(thisContext.r0)} R1: ${PD(thisContext.r1)} R2: ${PD(thisContext.r2)} R3: ${PD(thisContext.r3)}`)
-            logw(`R4: ${PD(thisContext.r4)} R5: ${PD(thisContext.r5)} R6: ${PD(thisContext.r6)} R7: ${PD(thisContext.r7)}`)
-            logw(`R8: ${PD(thisContext.r8)} R9: ${PD(thisContext.r9)} R10: ${PD(thisContext.r10)} R11: ${PD(thisContext.r11)}`)
-            logw(`IP(R12): ${PD(thisContext.r12)} SP(R13): ${PD(thisContext.sp)} LR(R14): ${PD(thisContext.lr)} PC(R15): ${PD(thisContext.pc)}`)
+            const tc = context as ArmCpuContext
+            logw(`R0: ${PD(tc.r0)} R1: ${PD(tc.r1)} R2: ${PD(tc.r2)} R3: ${PD(tc.r3)}`)
+            logw(`R4: ${PD(tc.r4)} R5: ${PD(tc.r5)} R6: ${PD(tc.r6)} R7: ${PD(tc.r7)}`)
+            logw(`R8: ${PD(tc.r8)} R9: ${PD(tc.r9)} R10: ${PD(tc.r10)} R11: ${PD(tc.r11)}`)
+            logw(`IP(R12): ${PD(tc.r12)} SP(R13): ${PD(tc.sp)} LR(R14): ${PD(tc.lr)} PC(R15): ${PD(tc.pc)}`)
         }
     }
 
     private static callOutInnerArm64 = (context: Arm64CpuContext) => {
-        const thisContext = context as Arm64CpuContext
+        const tc = context as Arm64CpuContext
         const currentThread: number = Process.getCurrentThreadId()
         logd(`\n[ ${getThreadName(currentThread)} @ ${currentThread} }\n`)
-        BreakPoint.printRegs(thisContext)
-        InstructionParser.printCurrentInstruction(thisContext.pc)
-        BPStatus.getStepActions(currentThread).forEach((action) => action(thisContext))
+        BreakPoint.printRegs(context)
+        InstructionParser.printCurrentInstruction(tc.pc)
+        BPStatus.getStepActions(currentThread).forEach((action) => action(tc))
         BreakPoint.BackTraceBySystem()
         Signal.sem_wait_threadid(currentThread)
     }
@@ -160,11 +163,11 @@ export class BreakPoint {
         let tmpText: string = Thread.backtrace(ctx, fuzzy ? Backtracer.FUZZY : Backtracer.ACCURATE)
             .slice(0, slice)
             .map(DebugSymbol.fromAddress)
-            .map((sym: DebugSymbol) => {
-                let strRet: string = `${sym}`
+            .map((sym: DebugSymbol, index: number) => {
+                let strRet: string = `${PD(`[${index}]`, 5)} ${sym}`
                 return strRet
             })
-            .join("\n")
+            .join(`\n`)
         return !retText ? logd(tmpText) : tmpText
     }
 

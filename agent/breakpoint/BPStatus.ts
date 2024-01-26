@@ -91,9 +91,29 @@ export class BPStatus {
     static getCurrentContext = (thread_id: number = BPStatus.currentThreadId): CpuContext => {
         const contextMap: Map<NativePointer, CpuContext> | undefined = BPStatus.threadContextMap.get(thread_id)
         if (contextMap == undefined) throw new Error("contextMap is null")
-        const context: CpuContext | undefined = contextMap.get(BPStatus.currentPC.get(BPStatus.currentThreadId)!)
+        const address: NativePointer | undefined = BPStatus.currentPC.get(BPStatus.currentThreadId)
+        if (address == undefined) throw new Error("address is null")
+        let context: CpuContext | undefined = undefined
+        for (const [key, value] of contextMap) {
+            if (key.equals(address)) {
+                context = value
+                break
+            }
+        }
+        // contextMap.forEach((value, key) => logd(`key = ${key} value = ${value}`))
         if (context == undefined) throw new Error("context is null")
         return context
+    }
+
+    static toString() {
+        let disp: string = ''
+        disp += `CurrentThreadId : ${BPStatus.currentThreadId}`
+        disp += `CurrentPC : ${BPStatus.currentPC}`
+        disp += `Breakpoints size : ${BPStatus.breakpoints.size}`
+        disp += `\t${BPStatus.breakpoints.entries()}`
+        disp += `threadContextMap size : ${BPStatus.threadContextMap.size}`
+        disp += `\t${BPStatus.threadContextMap.entries()}`
+        return disp
     }
 
 }
