@@ -1,0 +1,4 @@
+#!/bin/sh
+cp /usr/local/share/qbdiARM/qbdi_frida_template/* .
+cp /usr/local/share/qbdiARM/frida-qbdi.js .
+

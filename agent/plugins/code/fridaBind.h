@@ -1,0 +1,1 @@
+extern "C" void frida_log(const char *);

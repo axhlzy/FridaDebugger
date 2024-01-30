@@ -1,0 +1,2 @@
+#!/bin/sh
+cp /usr/local/share/qbdiARM/qbdi_template/* .

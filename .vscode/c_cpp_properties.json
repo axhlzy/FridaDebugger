@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "NDK_BUILD",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${ANDROID_SDK}/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/**",
+                "${ANDROID_SDK}/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/arm-linux-androideabi/**"
+            ],
+            "defines": [
+                "__ANDROID_API__=24",
+                "other_defines"
+            ],
+            "compilerPath": "${ANDROID_SDK}/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-arm64"
+        }
+    ],
+    "version": 4
+}
