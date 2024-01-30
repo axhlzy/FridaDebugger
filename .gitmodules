@@ -1,0 +1,18 @@
+[submodule "agent\\plugins\\LIEF\\source"]
+	path = agent\\plugins\\LIEF\\source
+	url = https://github.com/lief-project/LIEF.git
+[submodule "agent\\plugins\\QBDI\\source"]
+	path = agent\\plugins\\QBDI\\source
+	url = https://github.com/QBDI/QBDI.git
+[submodule "agent\\plugins\\keystone\\source"]
+	path = agent\\plugins\\keystone\\source
+	url = https://github.com/keystone-engine/keystone.git
+[submodule "agent\\plugins\\capstone\\source"]
+	path = agent\\plugins\\capstone\\source
+	url = https://github.com/capstone-engine/capstone.git
+[submodule "agent\\plugins\\V8\\source"]
+	path = agent\\plugins\\V8\\source
+	url = https://chromium.googlesource.com/v8/v8.git
+[submodule "agent\\plugins\\alpaca\\source"]
+	path = agent\\plugins\\alpaca\\source
+	url = https://github.com/p-ranav/alpaca.git
