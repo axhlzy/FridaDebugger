@@ -112,7 +112,7 @@ class QBDIBinder extends Binder {
      */
     get QBDI_LIB() {
         return {
-            'linux': 'libQBDI.so',
+            'linux': 'libPlugins.so',
             'darwin': 'libQBDI.dylib',
             'windows': 'QBDI.dll',
         }[Process.platform];
@@ -385,7 +385,7 @@ export var VMError = Object.freeze({
 /**
  * Synchronisation direction between Frida and QBDI GPR contexts
  */
-export var SyncDirection = Object.freeze({
+export var SyncDirection = {
     /**
      * Constant variable used to synchronize QBDI's context to Frida's.
      *
@@ -396,7 +396,7 @@ export var SyncDirection = Object.freeze({
      * Constant variable used to synchronize Frida's context to QBDI's.
      */
     FRIDA_TO_QBDI: 1
-});
+};
 
 /**
  * The callback results.
@@ -843,7 +843,7 @@ class State {
 /**
  * General Purpose Register context
  */
-class GPRState extends State  {
+export class GPRState extends State  {
     _getGPRId(rid) {
         if (typeof(rid) === 'string') {
             rid = GPR_NAMES.indexOf(rid.toUpperCase());
@@ -932,7 +932,7 @@ class GPRState extends State  {
      * .. warning:: Currently QBDI_TO_FRIDA is not implemented (due to Frida limitations).
      *
      * @param                   FridaCtx   Frida context
-     * @param {SyncDirection}   direction  Synchronization direction. (:js:data:`FRIDA_TO_QBDI` or :js:data:`QBDI_TO_FRIDA`)
+     * @param {SyncDirection | number}   direction  Synchronization direction. (:js:data:`FRIDA_TO_QBDI` or :js:data:`QBDI_TO_FRIDA`)
      */
     synchronizeContext(FridaCtx, direction) {
         for (var i in GPR_NAMES) {
@@ -993,7 +993,7 @@ class GPRState extends State  {
 /**
  * Floating Point Register context
  */
-class FPRState extends State {
+export class FPRState extends State {
     static validOrThrow(state) {
         if (!FPRState.prototype.isPrototypeOf(state)) {
             throw new TypeError('Invalid FPRState');
@@ -1119,7 +1119,7 @@ export class VM {
     /**
      * Add the executable address ranges of a module to the set of instrumented address ranges. using an address belonging to the module.
      *
-     * @param  {String|Number} addr An address contained by module's range.
+     * @param  {String|Number|NativePointer} addr An address contained by module's range.
      *
      * @return {bool} True if at least one range was removed from the instrumented ranges.
      */
@@ -1365,7 +1365,7 @@ export class VM {
     /**
      * Register a callback event for a specific instruction event.
      *
-     * @param {InstPosition} pos       Relative position of the callback (PreInst / PostInst).
+     * @param {InstPosition|number} pos       Relative position of the callback (PreInst / PostInst).
      * @param {InstCallback} cbk       A **native** InstCallback returned by :js:func:`VM.newInstCallback`.
      * @param {Object}       data      User defined data passed to the callback.
      * @param {Int}          priority  The priority of the callback.
@@ -1720,7 +1720,7 @@ export class VM {
      *       >>> vm.addInstrumentedModuleFromAddr(aFunction);
      *       >>> vm.call(aFunction, [42]);
      *
-     * @param {String|Number}           address function address (or Frida ``NativePointer``).
+     * @param {String|Number|NativePointer}           address function address (or Frida ``NativePointer``).
      * @param {StringArray|NumberArray} [args]  optional list of arguments
      */
     call(address, args) {

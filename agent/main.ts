@@ -7,3 +7,5 @@ import './breakpoint/include'
 import './instructions/include'
 import './cmoudles/include'
 import './parser/include'
+
+import './plugins/include'

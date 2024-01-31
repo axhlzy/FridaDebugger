@@ -1,6 +1,7 @@
 param (
     [string]$ABI = "arm64-v8a",
-    [bool]$cleanDir = $true
+    [bool]$cleanDir = $false,
+    [string]$pluginName = "libPlugins.so"
 )
 
 if ($ABI -ne "armeabi-v7a" -and $ABI -ne "arm64-v8a") {
@@ -9,19 +10,21 @@ if ($ABI -ne "armeabi-v7a" -and $ABI -ne "arm64-v8a") {
     exit 1
 }
 
-$soPath = $PSScriptRoot + "/agent/plugins/$ABI/libpacklibs.so"
+$soPath = $PSScriptRoot + "/agent/plugins/$ABI/$pluginName"
 if (Test-Path $soPath) {
-    Write-Host "agent/plugins/$ABI/libpacklibs.so exists" -ForegroundColor Green
+    Write-Host "agent/plugins/$ABI/$pluginName exists" -ForegroundColor Green
 }
 else {
-    Write-Host "agent/plugins/$ABI/libpacklibs.so not exists" -ForegroundColor Red
+    Write-Host "agent/plugins/$ABI/$pluginName not exists" -ForegroundColor Red
     # build it 
-    Write-Host "build agent/plugins/$ABI/libpacklibs.so" -ForegroundColor Green
+    Write-Host "build agent/plugins/$ABI/$pluginName" -ForegroundColor Green
     & $PSScriptRoot/agent/plugins/buildScript.ps1 -SOURCE $PSScriptRoot/agent/plugins -ABI $ABI
 }
 
 adb push $soPath /data/local/tmp
-adb shell chmod 777 /data/local/tmp/libpacklibs.so
+adb shell chmod 777 /data/local/tmp/libPlugins.so
+
+adb shell su -c 'setenforce 0'
 
 if ($cleanDir) {
     Remove-Item (Split-Path $soPath) -Recurse -Force

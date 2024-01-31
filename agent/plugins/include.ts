@@ -6,3 +6,5 @@ import './V8/include'
 
 import './curl/include'
 import './openssl/include'
+
+import './main'

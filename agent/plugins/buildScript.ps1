@@ -1,7 +1,7 @@
 param (
     [string]$SOURCE = '.',
     [string]$ABI = "arm64-v8a",
-    [string]$BUILD_TYPE = "Release",
+    [string]$BUILD_TYPE = "Debug",
     [string]$API_LEVEL = "24",
     [string]$TOOLCHAIN
 )
