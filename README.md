@@ -32,3 +32,5 @@ todo:
 ![bt](https://github.com/axhlzy/FridaDebugger/blob/main/images/bt.png)
 
 ![si](https://github.com/axhlzy/FridaDebugger/blob/main/images/si.png)
+
+![debug](https://github.com/axhlzy/FridaDebugger/blob/main/images/debug.png)
