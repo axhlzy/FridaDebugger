@@ -112,7 +112,7 @@ class QBDIBinder extends Binder {
      */
     get QBDI_LIB() {
         return {
-            'linux': 'libPlugins.so',
+            'linux': 'libQBDI_64.so',
             'darwin': 'libQBDI.dylib',
             'windows': 'QBDI.dll',
         }[Process.platform];
@@ -1097,8 +1097,8 @@ export class VM {
     /**
      * Add an address range to the set of instrumented address ranges.
      *
-     * @param {String|Number} start  Start address of the range (included).
-     * @param {String|Number} end    End address of the range (excluded).
+     * @param {String|Number|NativePointer} start  Start address of the range (included).
+     * @param {String|Number|NativePointer} end    End address of the range (excluded).
      */
     addInstrumentedRange(start, end) {
         QBDI_C.addInstrumentedRange(this.#vm, start.toRword(), end.toRword());

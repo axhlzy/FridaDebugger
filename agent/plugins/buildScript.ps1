@@ -7,7 +7,7 @@ param (
 )
 
 if ($ABI -ne "armeabi-v7a" -and $ABI -ne "arm64-v8a") {
-    Write-Host "Invalid ABI: $ABI" -ForegroundColor Red
+    Write-Host "Invalid ABI: $($ABI)" -ForegroundColor Red
     Write-Host "ABI must be either armeabi-v7a or arm64-v8a" -ForegroundColor Red
     exit 1
 }
@@ -36,21 +36,21 @@ if (-not $TOOLCHAIN) {
     exit 1
 }
 else {
-    Write-Host  "Android NDK found @ $TOOLCHAIN" -ForegroundColor Green
+    Write-Host  "Android NDK found @ $($TOOLCHAIN)" -ForegroundColor Green
 }
 
-$BUILD = ($SOURCE + "/" + $ABI).Replace("/", "\")
+$BUILD = Join-Path $SOURCE $ABI
 
 $cmakeArgs = @(
     "-G", "Ninja",
-    "-B", "$BUILD",
-    "-S", "$SOURCE",
-    "-DANDROID_ABI=$ABI",
-    "-DCMAKE_BUILD_TYPE=$BUILD_TYPE",
-    "-DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN",
-    "-DCMAKE_SYSTEM_VERSION=$API_LEVEL",
-    "-DANDROID_NATIVE_API_LEVEL=$API_LEVEL",
-    "-DANDROID_PLATFORM=android-$API_LEVEL",
+    "-B", "$($BUILD)",
+    "-S", "$($SOURCE)",
+    "-DANDROID_ABI=$($ABI)",
+    "-DCMAKE_BUILD_TYPE=$($BUILD_TYPE)",
+    "-DCMAKE_TOOLCHAIN_FILE=$($TOOLCHAIN)",
+    "-DCMAKE_SYSTEM_VERSION=$($API_LEVEL)",
+    "-DANDROID_NATIVE_API_LEVEL=$($API_LEVEL)",
+    "-DANDROID_PLATFORM=android-$($API_LEVEL)",
     "-DANDROID_ARM_NEON=ON",
     "-DCMAKE_SYSTEM_NAME=Android",
     "-DANDROID_ARM_MODE=arm"
@@ -58,12 +58,11 @@ $cmakeArgs = @(
 
 & cmake $cmakeArgs
 
-# cmake -G "Ninja" -B "$BUILD" -S "$SOURCE" --toolchain="$TOOLCHAIN"  -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DANDROID_ABI="$ABI" -DCMAKE_SYSTEM_VERSION="$API_LEVEL" -DANDROID_NATIVE_API_LEVEL="$API_LEVEL" -DANDROID_PLATFORM=android-"$API_LEVEL" -DANDROID_TOOLCHAIN=clang -DANDROID_ARM_NEON=ON -DCMAKE_SYSTEM_NAME="Android" -DANDROID_ARM_MODE=arm
 if ($LASTEXITCODE -ne 0) {
     Write-Host "CMake configuration failed" -ForegroundColor Red
-    Remove-Item -Path "$BUILD" -Recurse -Force
-    Write-Host "Removed $BUILD" -ForegroundColor Yellow
+    Remove-Item -Path $BUILD -Recurse -Force
+    Write-Host "Removed $($BUILD)" -ForegroundColor Yellow
     exit 1
 }
 
-cmake --build "$BUILD"
+cmake --build $BUILD

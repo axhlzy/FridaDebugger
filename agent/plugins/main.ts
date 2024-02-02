@@ -1,0 +1,1 @@
+Reflect.set(globalThis, "D", Interceptor.detachAll())

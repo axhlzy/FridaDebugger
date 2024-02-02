@@ -112,7 +112,7 @@ class QBDIBinder extends Binder {
      */
     get QBDI_LIB() {
         return {
-            'linux': 'libPlugins.so',
+            'linux': 'libQBDI_32.so',
             'darwin': 'libQBDI.dylib',
             'windows': 'QBDI.dll',
         }[Process.platform];
