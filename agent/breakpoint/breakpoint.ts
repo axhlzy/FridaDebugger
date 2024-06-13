@@ -5,14 +5,17 @@ import { padding as PD } from '../utils'
 import { Debugger } from '../debugger'
 import { Signal } from '../signal'
 
-const DebugType: boolean = false
+const DebugType: boolean = true
 
 export class BreakPoint {
 
-    private static InnerAttach(localPtr: NativePointer) {
+    private static InnerAttach(localPtr: NativePointer, threadid?: number) {
+        if (DebugType) logw(`InnerAttach ${localPtr}`)
         Interceptor.attach(localPtr, {
             onEnter(this: InvocationContext, _args: InvocationArguments) {
-                Stalker.follow(Process.getCurrentThreadId(), {
+                threadid = threadid ? Process.getCurrentThreadId() : threadid
+                logw(`Enter ${localPtr} | threadid ${threadid} | MAIN?${Boolean(threadid === getMainThreadId())}`)
+                Stalker.follow(threadid, {
                     events: {
                         call: false,
                         ret: false,
@@ -22,8 +25,9 @@ export class BreakPoint {
                     },
                     transform: function (iterator: StalkerArm64Iterator) {
                         let instruction = iterator.next()
+                        logw(instruction.toString())
                         do {
-                            if (Debugger.getModule(Process.getCurrentThreadId()).has(instruction!.address)) {
+                            if (Debugger.getModule(threadid).has(instruction!.address)) {
                                 if (DebugType) logz(`${DebugSymbol.fromAddress(instruction?.address as NativePointer)} ${instruction}`)
                                 iterator.putCallout(BreakPoint.CalloutInner)
                             }
@@ -35,7 +39,7 @@ export class BreakPoint {
             },
             // only function bp need unfollow here
             onLeave: BPStatus.getBpType(localPtr) != BP_TYPE.Function ? undefined : function (this: InvocationContext, _retval: InvocationReturnValue) {
-                Stalker.unfollow(Process.getCurrentThreadId())
+                Stalker.unfollow(threadid)
             }
         })
     }
@@ -49,7 +53,7 @@ export class BreakPoint {
         BPStatus.setPaused(thread_id, false)
     }
 
-    static attchByFunction = (mPtr: NativePointer | number | string = NULL, mdName = null) => {
+    static attchByFunction = (mPtr: NativePointer | number | string = NULL, mdName = null, threadid?: number) => {
         let localPtr: NativePointer = NULL
         if (mPtr instanceof NativePointer) localPtr = mPtr
         else {
@@ -64,7 +68,7 @@ export class BreakPoint {
         }
 
         BPStatus.addBp(localPtr, BP_TYPE.Function)
-        BreakPoint.InnerAttach(localPtr)
+        BreakPoint.InnerAttach(localPtr, threadid)
     }
 
     private static checkArgs = (mPtr: NativePointer | number = NULL): NativePointer => {
@@ -80,26 +84,26 @@ export class BreakPoint {
     }
 
     // inlinehook unfollow by pc == lr
-    static attachByLR = (mPtr: NativePointer | number = NULL) => {
+    static attachByLR = (mPtr: NativePointer | number = NULL, threadid?: number) => {
         let localPtr: NativePointer | null = BreakPoint.checkArgs(mPtr)
         BPStatus.addBp(localPtr, BP_TYPE.LR)
-        BreakPoint.InnerAttach(localPtr)
+        BreakPoint.InnerAttach(localPtr, threadid)
         throw new Error("not implement")
     }
 
     // inlinehook unfollow by stack < 0
-    static attachBySP = (mPtr: NativePointer | number = NULL) => {
+    static attachBySP = (mPtr: NativePointer | number = NULL, threadid?: number) => {
         let localPtr: NativePointer | null = BreakPoint.checkArgs(mPtr)
         BPStatus.addBp(localPtr, BP_TYPE.SP)
-        BreakPoint.InnerAttach(localPtr)
+        BreakPoint.InnerAttach(localPtr, threadid)
         throw new Error("not implement")
     }
 
     // inlinehook unfollow by RANGE
-    static attachByRange = (mPtr: NativePointer | number = NULL) => {
+    static attachByRange = (mPtr: NativePointer | number = NULL, threadid?: number) => {
         let localPtr: NativePointer | null = BreakPoint.checkArgs(mPtr)
         BPStatus.addBp(localPtr, BP_TYPE.RANGE)
-        BreakPoint.InnerAttach(localPtr)
+        BreakPoint.InnerAttach(localPtr, threadid)
         throw new Error("not implement")
     }
 

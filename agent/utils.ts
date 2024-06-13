@@ -1,4 +1,5 @@
 import { logd, logz } from "./logger"
+import { Semaphore } from "./signal"
 
 globalThis.clear = () => console.log('\x1Bc')
 
@@ -69,22 +70,35 @@ export const packApiResove = (patter: string = "exports:*!*Unwind*") => {
     })
 }
 
-declare global {
-    var clear: () => void
-    var newLine: (lines?: number) => void
-    var filterDuplicateOBJ: (objstr: string, maxCount?: number) => boolean
-    var getThreadName: (tid: number) => string
-    var demangleName: (expName: string) => string
-    var PD: (str: string | NativePointer, len?: number, pad?: string, end?: boolean) => string
-    var padding: (str: string | NativePointer, len?: number, pad?: string, end?: boolean) => string
-    var d: () => void
+export const getMainThreadId = () => {
+    let retId = -1
+    let semaphore = new Semaphore()
+    Java.scheduleOnMainThread(() => {
+        retId = Process.getCurrentThreadId()
+        semaphore.post()
+    })
+    semaphore.wait()
+    return retId
 }
 
-globalThis.clear = clear
-globalThis.newLine = newLine
-globalThis.filterDuplicateOBJ = filterDuplicateOBJ
-globalThis.getThreadName = getThreadName
-globalThis.demangleName = demangleName
-globalThis.padding = padding
-globalThis.PD = padding
+declare global {
+    var d: () => void
+    var clear: () => void
+    var getMainThreadId: () => number
+    var newLine: (lines?: number) => void
+    var getThreadName: (tid: number) => string
+    var demangleName: (expName: string) => string
+    var filterDuplicateOBJ: (objstr: string, maxCount?: number) => boolean
+    var PD: (str: string | NativePointer, len?: number, pad?: string, end?: boolean) => string
+    var padding: (str: string | NativePointer, len?: number, pad?: string, end?: boolean) => string
+}
+
 globalThis.d = d
+globalThis.PD = padding
+globalThis.clear = clear
+globalThis.padding = padding
+globalThis.newLine = newLine
+globalThis.getThreadName = getThreadName
+globalThis.getMainThreadId = getMainThreadId
+globalThis.filterDuplicateOBJ = filterDuplicateOBJ
+globalThis.demangleName = demangleName

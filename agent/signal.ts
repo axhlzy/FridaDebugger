@@ -45,3 +45,34 @@ export namespace Signal {
 Reflect.set(globalThis, "Signal", Signal)
 Reflect.set(globalThis, "step", Signal.continue_instruction)
 Reflect.set(globalThis, "si", Signal.continue_instruction)
+
+// using in local code
+export class Semaphore {
+    
+    private sem: NativePointer
+    private sem_init: NativeFunction<number, [NativePointerValue, number, number]>
+    private sem_wait: NativeFunction<number, [NativePointerValue]>
+    private sem_post: NativeFunction<number, [NativePointerValue]>
+    private sem_destroy: NativeFunction<number, [NativePointerValue]>
+
+    constructor(initialValue = 0) {
+        this.sem = Memory.alloc(0x8);
+        this.sem_init = new NativeFunction(Module.findExportByName("libc.so", "sem_init"), 'int', ['pointer', 'int', 'uint']);
+        this.sem_wait = new NativeFunction(Module.findExportByName("libc.so", "sem_wait"), 'int', ['pointer']);
+        this.sem_post = new NativeFunction(Module.findExportByName("libc.so", "sem_post"), 'int', ['pointer']);
+        this.sem_destroy = new NativeFunction(Module.findExportByName("libc.so", "sem_destroy"), 'int', ['pointer']);
+        this.sem_init(this.sem, 0, initialValue);
+    }
+
+    wait() {
+        this.sem_wait(this.sem);
+    }
+
+    post() {
+        this.sem_post(this.sem);
+    }
+
+    destroy() {
+        this.sem_destroy(this.sem);
+    }
+}
