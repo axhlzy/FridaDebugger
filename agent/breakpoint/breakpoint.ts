@@ -25,7 +25,7 @@ export class BreakPoint {
                     },
                     transform: function (iterator: StalkerArm64Iterator) {
                         let instruction = iterator.next()
-                        logw(instruction.toString())
+                        if (DebugType) logw(instruction.toString())
                         do {
                             if (Debugger.getModule(threadid).has(instruction!.address)) {
                                 if (DebugType) logz(`${DebugSymbol.fromAddress(instruction?.address as NativePointer)} ${instruction}`)
