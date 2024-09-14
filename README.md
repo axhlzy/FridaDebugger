@@ -17,6 +17,13 @@ frida --codeshare axhlzy/fridadebugger -U -f ${PackageName}
 
 ---
 
+idea:
+ 现在已知的问题是stalker trace出来的汇编未必和原来的汇编完全对的上 ( 所以很多时候看起来还是有点问题的 )
+ 所以新的思路考虑 使用qbdi frida signal 的组合，借用qbdi的单步指令trace，然后把信号下在每次指令执行的位置以达到单步执行的效果
+ ... todo ...
+ 考虑到frida脚本就脚本吧，每次都要附带一个so的push多麻烦的，所以暂时是这么考虑优化：
+ 将编译出来的so文件base64编码在js脚本中，运行时解出来再使用frida的load将动态库加载进去
+
 todo: 
  平栈解析
  ...
