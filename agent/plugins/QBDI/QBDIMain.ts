@@ -1,8 +1,8 @@
 import { VM, VMAction, GPRState, FPRState, CallbackPriority, VMError, InstPosition, SyncDirection }
-    from './arm64-v8a/share/qbdiAARCH64/frida-qbdi'
-import { AnalysisType, ContextItem, ExtraInfo } from './StructInfo'
-import { logd, logz } from '../../logger'
-import { ContextParser } from './ContextParser'
+    from './arm64-v8a/share/qbdiAARCH64/frida-qbdi.js'
+import { AnalysisType, ContextItem, ExtraInfo } from './StructInfo.js'
+import { logd, logz } from '../../logger.js'
+import { ContextParser } from './ContextParser.js'
 
 type ICBK_CALL = (vm: VM, gpr: GPRState, fpr: FPRState, data: NativePointer) => number
 

@@ -3,8 +3,19 @@ param (
     [string]$ABI = "arm64-v8a",
     [string]$BUILD_TYPE = "Debug",
     [string]$API_LEVEL = "24",
-    [string]$TOOLCHAIN
+    [string]$TOOLCHAIN = "",
+    [string]$NDK_VERSION = "25.1.8937393"
 )
+
+if (-not (Get-Command "cmake" -ErrorAction SilentlyContinue)) {
+    Write-Host "CMake not found" -ForegroundColor Red
+    return 
+}
+
+if (-not (Get-Command "ninja" -ErrorAction SilentlyContinue)) {
+    Write-Host "Ninja not found" -ForegroundColor Red
+    return 
+}
 
 if ($ABI -ne "armeabi-v7a" -and $ABI -ne "arm64-v8a") {
     Write-Host "Invalid ABI: $($ABI)" -ForegroundColor Red
@@ -13,7 +24,7 @@ if ($ABI -ne "armeabi-v7a" -and $ABI -ne "arm64-v8a") {
 }
 
 if ([System.Environment]::OSVersion.Platform -eq 'Unix') {
-    $TOOLCHAIN = locate android.toolchain.cmake | grep 25.1.8937393
+    $TOOLCHAIN = locate android.toolchain.cmake | grep $NDK_VERSION
 }
 elseif ([System.Environment]::OSVersion.Platform -eq 'Win32NT') {
     $sdkRoot = [System.Environment]::GetEnvironmentVariable('ANDROID_SDK_ROOT', [System.EnvironmentVariableTarget]::User)
@@ -65,4 +76,6 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# .\buildScript.ps1 -abi armeabi-v7a
+# .\buildScript.ps1 -abi arm64-v8a
 cmake --build $BUILD

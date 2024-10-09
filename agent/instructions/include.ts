@@ -1,1 +1,1 @@
-import './instruction'
+import './instruction.js' 

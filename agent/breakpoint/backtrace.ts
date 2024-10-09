@@ -1,5 +1,5 @@
-import { logd, logz } from "../logger"
-import { BPStatus } from "./BPStatus"
+import { logd, logz } from "../logger.js"
+import { BPStatus } from "./BPStatus.js"
 
 type _Unwind_Context_PTR = NativePointer
 

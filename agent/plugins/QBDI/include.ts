@@ -1,2 +1,2 @@
-import './StructInfo'
-import './QBDIMain'
+import './StructInfo.js'
+import './QBDIMain.js'

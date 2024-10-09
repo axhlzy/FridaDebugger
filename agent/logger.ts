@@ -1,5 +1,3 @@
-import { filterDuplicateOBJ } from "./utils"
-
 export enum LogRedirect {
     LOGCAT,
     CMD,
@@ -38,35 +36,35 @@ export enum LogColor {
     C100 = 100, C101 = 101, C102 = 102, C103 = 103, C104 = 104, C105 = 105, C106 = 106, C107 = 107
 }
 
-export const logw = (message: string, fileName = __filename) => log(message, fileName, LogColor.YELLOW)
+export const logw = (message: string) => log(message, LogColor.YELLOW)
 
-export const logt = (message: string, fileName = __filename) => log(message, fileName, LogColor.TRACE)
+export const logt = (message: string) => log(message, LogColor.TRACE)
 
-export const logm = (message: string, fileName = __filename) => log(message, fileName, LogColor.MARK)
+export const logm = (message: string) => log(message, LogColor.MARK)
 
-export const logf = (message: string, fileName = __filename) => log(message, fileName, LogColor.FATAL)
+export const logf = (message: string) => log(message, LogColor.FATAL)
 
-export const loge = (message: string, fileName = __filename) => log(message, fileName, LogColor.RED)
+export const loge = (message: string) => log(message, LogColor.RED)
 
-export const logg = (message: string, fileName = __filename) => log(message, fileName, LogColor.C32)
+export const logg = (message: string) => log(message, LogColor.C32)
 
-export const logo = (message: string, fileName = __filename) => log(message, fileName, LogColor.C33)
+export const logo = (message: string) => log(message, LogColor.C33)
 
-export const logl = (message: string, fileName = __filename) => log(message, fileName, LogColor.C34)
+export const logl = (message: string) => log(message, LogColor.C34)
 
-export const logn = (message: string, fileName = __filename) => log(message, fileName, LogColor.C35)
+export const logn = (message: string) => log(message, LogColor.C35)
 
-export const logd = (message: string, fileName = __filename) => log(message, fileName, LogColor.C36)
+export const logd = (message: string) => log(message, LogColor.C36)
 
-export const logh = (message: string, fileName = __filename) => log(message, fileName, LogColor.C96)
+export const logh = (message: string) => log(message, LogColor.C96)
 
-export const logz = (message: string, fileName = __filename) => log(message, fileName, LogColor.C90)
+export const logz = (message: string) => log(message, LogColor.C90)
 
 const LOG_TO: LogRedirect = LogRedirect.CMD
 
 const LOG_COUNT_MAX: number = 20
 
-export function log(message: string, _filename: string = '', type: LogColor = LogColor.WHITE, filter: boolean = false): void {
+export function log(message: string, type: LogColor = LogColor.WHITE, filter: boolean = false): void {
     if (LOG_TO == LogRedirect.NOP) return
     if (filter && !filterDuplicateOBJ(message, LOG_COUNT_MAX)) return
     switch (LOG_TO) {
@@ -122,3 +120,28 @@ const showToast = (message: string) => {
         Java.scheduleOnMainThread(() => Toast.makeText(context, Java.use("java.lang.String").$new(message), 1).show())
     })
 }
+
+var nameCountMap: Map<string, number> = new Map()
+globalThis.filterDuplicateOBJ = (objstr: string, maxCount: number = 10) => {
+    let count: number | undefined = nameCountMap.get(objstr.toString())
+    if (count == undefined) count = 0
+    if (count < maxCount) {
+        nameCountMap.set(objstr.toString(), count + 1)
+        return true
+    }
+    return false
+}
+
+declare global {
+    var filterDuplicateOBJ: (objstr: string, maxCount?: number) => boolean
+
+    var logd: (message: string) => void
+    var loge: (message: string) => void
+    var logw: (message: string) => void
+    var logi: (message: string) => void
+}
+
+globalThis.logd = logd
+globalThis.loge = console.error
+globalThis.logw = console.warn
+globalThis.logi = console.info

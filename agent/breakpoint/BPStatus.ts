@@ -1,4 +1,4 @@
-import { logd, logw } from "../logger"
+import { logd, logw } from "../logger.js"
 
 export class BPStatus {
 
@@ -50,7 +50,6 @@ export class BPStatus {
         }
         return false
     }
-
 
     static addStepAction = (action: (ctx: CpuContext) => void, thread_id: number = BPStatus.currentThreadId) => {
         let actions: ((ctx: CpuContext) => void)[] | undefined = BPStatus.actionStep.get(thread_id)
@@ -114,14 +113,38 @@ export class BPStatus {
     }
 
     static toString() {
-        let disp: string = ''
-        disp += `CurrentThreadId : ${BPStatus.currentThreadId}`
-        disp += `CurrentPC : ${BPStatus.currentPC}`
-        disp += `Breakpoints size : ${BPStatus.breakpoints.size}`
-        disp += `\t${BPStatus.breakpoints.entries()}`
-        disp += `threadContextMap size : ${BPStatus.threadContextMap.size}`
-        disp += `\t${BPStatus.threadContextMap.entries()}`
+        let disp: string = '\n'
+        disp += `CurrentThreadId : ${BPStatus.currentThreadId}\n`
+        disp += `CurrentPC : ${JSON.stringify(Array.from(BPStatus.currentPC))}\n`
+        disp += `Breakpoints size : ${BPStatus.breakpoints.size}\n`
+        disp += `\t${JSON.stringify(Array.from(BPStatus.breakpoints.entries()))}\n`
+        disp += `threadContextMap size : ${BPStatus.threadContextMap.size}\n`
+        disp += `\t${JSON.stringify(Array.from(BPStatus.threadContextMap.entries()))}\n`
         return disp
+    }
+
+    private static saveBuffer(){
+        // mmap maps a section of memory to hold data(BPStatus)
+        // todo ...
+    }
+
+    toBuffer(): Buffer {
+        const data = JSON.stringify({
+            isPaused: BPStatus.isPaused,
+            currentThreadId: BPStatus.currentThreadId,
+            currentPC: Array.from(BPStatus.currentPC.entries())
+            // ...
+        })
+        return Buffer.from(data)
+    }
+
+    static fromBuffer(buffer: Buffer): void {
+        const json = buffer.toString()
+        const data = JSON.parse(json)
+        BPStatus.isPaused = data.isPaused
+        BPStatus.currentThreadId = data.currentThreadId
+        BPStatus.currentPC = new Map(data.currentPC)
+        // ...
     }
 
 }
@@ -134,4 +157,5 @@ export enum BP_TYPE {
 }
 
 Reflect.set(globalThis, "BPStatus", BPStatus)
+Reflect.set(globalThis, "status", ()=>{logd(BPStatus.toString())})
 Reflect.set(globalThis, "bps", BPStatus)

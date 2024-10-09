@@ -1,5 +1,5 @@
-import { logd } from "../../logger"
-import { ContextItem, GContext } from "./StructInfo"
+import { ContextItem, GContext } from "./StructInfo.js"
+import { logd } from "../../logger.js"
 
 export class ContextParser {
 

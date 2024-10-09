@@ -108,27 +108,27 @@ export class ContextItem {
  */
 export class AnalysisType {
 
-    address: number
-    affectControlFlow: boolean
-    condition: number
-    cpuMode: number
-    disassembly: string
-    flagsAccess: number
-    instSize: number
-    isBranch: boolean
-    isCall: boolean
-    isCompare: boolean
-    isMoveImm: boolean
-    isPredicable: boolean
-    isReturn: boolean
-    loadSize: number
-    mayLoad: boolean
-    mayStore: boolean
-    mnemonic: string
-    module: string
-    operands: Array<any>
-    storeSize: number
-    symbol: string
-    symbolOffset: number
+    address!: number
+    affectControlFlow!: boolean
+    condition!: number
+    cpuMode!: number
+    disassembly!: string
+    flagsAccess!: number
+    instSize!: number
+    isBranch!: boolean
+    isCall!: boolean
+    isCompare!: boolean
+    isMoveImm!: boolean
+    isPredicable!: boolean
+    isReturn!: boolean
+    loadSize!: number
+    mayLoad!: boolean
+    mayStore!: boolean
+    mnemonic!: string
+    module!: string
+    operands!: Array<any>
+    storeSize!: number
+    symbol!: string
+    symbolOffset!: number
 
 }

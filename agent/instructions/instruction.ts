@@ -1,5 +1,5 @@
-import { BPStatus } from "../breakpoint/BPStatus"
-import { loge, logl, logz } from "../logger"
+import { BPStatus } from "../breakpoint/BPStatus.js"
+import { loge, logl, logz } from "../logger.js"
 
 export class InstructionParser {
 
@@ -25,7 +25,7 @@ export class InstructionParser {
             }
         } while (true)
 
-        var ins: Instruction = Instruction.parse(instruction_start)
+        let ins: Instruction = Instruction.parse(instruction_start)
         do {
             // // error ins
             // if (ins.toString().includes('udf')) {
@@ -35,7 +35,7 @@ export class InstructionParser {
             // }
             let ins_str: string = `${DebugSymbol.fromAddress(ins.address)} | ${ins.toString()}`
             const ins_op: string = InstructionParser.InsParser(ins.address)
-            if (ins_op.length != 0) ins_str += `\t| ${ins_op}`
+            if (ins_op.length != 0) ins_str += `\t-> ${ins_op}`
             ins.address.equals(pc) ? loge(`-> ${ins_str}`) : logz(`   ${ins_str}`)
             if (ret) arrayRet.push({ address: ins.address, dis: ins_str })
             try {
@@ -69,11 +69,10 @@ export class InstructionParser {
         }
         return ''
     }
-
 }
 
 Reflect.set(globalThis, "InstructionParser", InstructionParser)
 Reflect.set(globalThis, "ins", InstructionParser)
 
 Reflect.set(globalThis, "dism", (mPtr?: NativePointer, extraIns?: number) => { InstructionParser.printCurrentInstruction(mPtr, extraIns) }) // dism
-Reflect.set(globalThis, "pi", (mPtr?: NativePointer, extraIns?: number) => { InstructionParser.printCurrentInstruction(mPtr, extraIns) }) // dism
+Reflect.set(globalThis, "pi", (mPtr?: NativePointer, extraIns?: number) => { InstructionParser.printCurrentInstruction(mPtr, extraIns) }) // dism 

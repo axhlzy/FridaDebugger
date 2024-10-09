@@ -1,4 +1,5 @@
-import { BPStatus } from "./breakpoint/BPStatus"
+import { BPStatus } from "./breakpoint/BPStatus.js"
+
 export namespace Signal {
 
     var semlock_global = Memory.alloc(0x10)
@@ -57,22 +58,22 @@ export class Semaphore {
 
     constructor(initialValue = 0) {
         this.sem = Memory.alloc(0x8);
-        this.sem_init = new NativeFunction(Module.findExportByName("libc.so", "sem_init"), 'int', ['pointer', 'int', 'uint']);
-        this.sem_wait = new NativeFunction(Module.findExportByName("libc.so", "sem_wait"), 'int', ['pointer']);
-        this.sem_post = new NativeFunction(Module.findExportByName("libc.so", "sem_post"), 'int', ['pointer']);
-        this.sem_destroy = new NativeFunction(Module.findExportByName("libc.so", "sem_destroy"), 'int', ['pointer']);
-        this.sem_init(this.sem, 0, initialValue);
+        this.sem_init = new NativeFunction(Module.findExportByName("libc.so", "sem_init")!, 'int', ['pointer', 'int', 'uint'])
+        this.sem_wait = new NativeFunction(Module.findExportByName("libc.so", "sem_wait")!, 'int', ['pointer'])
+        this.sem_post = new NativeFunction(Module.findExportByName("libc.so", "sem_post")!, 'int', ['pointer'])
+        this.sem_destroy = new NativeFunction(Module.findExportByName("libc.so", "sem_destroy")!, 'int', ['pointer'])
+        this.sem_init(this.sem, 0, initialValue)
     }
 
     wait() {
-        this.sem_wait(this.sem);
+        this.sem_wait(this.sem)
     }
 
     post() {
-        this.sem_post(this.sem);
+        this.sem_post(this.sem)
     }
 
     destroy() {
-        this.sem_destroy(this.sem);
+        this.sem_destroy(this.sem)
     }
 }

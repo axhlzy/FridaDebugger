@@ -1,10 +1,10 @@
-import './LIEF/include'
-import './QBDI/include'
-import './capstone/include'
-import './keystone/include'
-import './V8/include'
+import './LIEF/include.js'
+import './QBDI/include.js'
+import './capstone/include.js'
+import './keystone/include.js'
+import './V8/include.js'
 
-import './curl/include'
-import './openssl/include'
+import './curl/include.js'
+import './openssl/include.js'
 
-import './main'
+import './main.js'

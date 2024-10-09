@@ -1,13 +1,13 @@
-import './logger'
-import './utils'
-import './debugger'
-import './signal'
+import './logger.js' 
+import './utils.js'
+import './debugger.js'
+import './signal.js'
 
-import './breakpoint/include'
-import './instructions/include'
-import './cmoudles/include'
-import './parser/include'
+import './breakpoint/include.js'
+import './instructions/include.js'
+import './cmoudles/include.js'
+import './parser/include.js'
+ 
+import './plugins/include.js'
 
-import './plugins/include'
-
-import "frida-il2cpp-bridge"
+import "frida-il2cpp-bridge"  

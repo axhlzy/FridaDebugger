@@ -1,5 +1,5 @@
-import { BPStatus } from "./breakpoint/BPStatus"
-import { loge } from "./logger"
+import { BPStatus } from "./breakpoint/BPStatus.js"
+import { loge } from "./logger.js"
 
 export class Debugger {
 

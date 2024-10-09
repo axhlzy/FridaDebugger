@@ -1,4 +1,4 @@
-import { ParserBase } from "./ParserBase"
+import { ParserBase } from "./ParserBase.js"
 
 export class ArtParser extends ParserBase {
 

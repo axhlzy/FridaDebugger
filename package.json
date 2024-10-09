@@ -10,12 +10,17 @@
     "watch": "frida-compile agent/main.ts -o _agent.js -w"
   },
   "devDependencies": {
-    "@types/frida-gum": "^18.5.1",
-    "@types/node": "^18.14.0",
-    "frida-compile": "10.0.0"
+    "@types/frida-gum": "^18.3.1",
+    "@types/node": "^18.15.3",
+    "frida-compile": "^16.4.1"
   },
   "dependencies": {
-    "ts-transformer-inline-file": "^0.2.0",
-    "frida-il2cpp-bridge": "0.7.13"
+    "class-transformer": "^0.5.1",
+    "frida-il2cpp-bridge": "0.9.1",
+    "frida-stack": "^1.0.0",
+    "lodash": "^4.17.21",
+    "pretty-format": "^29.7.0",
+    "serializr": "^3.0.2",
+    "ts-transformer-inline-file": "^0.2.0"
   }
 }

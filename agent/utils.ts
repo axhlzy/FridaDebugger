@@ -1,5 +1,5 @@
-import { logd, logz } from "./logger"
-import { Semaphore } from "./signal"
+import { logd, logz } from "./logger.js"
+import { Semaphore } from "./signal.js"
 
 globalThis.clear = () => console.log('\x1Bc')
 
@@ -8,17 +8,6 @@ globalThis.newLine = (lines: number = 1) => {
 }
 
 globalThis.d = () => { Interceptor.detachAll() }
-
-var nameCountMap: Map<string, number> = new Map()
-export const filterDuplicateOBJ = (objstr: string, maxCount: number = 10) => {
-    let count: number | undefined = nameCountMap.get(objstr.toString())
-    if (count == undefined) count = 0
-    if (count < maxCount) {
-        nameCountMap.set(objstr.toString(), count + 1)
-        return true
-    }
-    return false
-}
 
 export function getThreadName(tid: number) {
     let threadName: string = "unknown"
@@ -55,7 +44,7 @@ export function demangleName(expName: string) {
     } else return ""
 }
 
-export const padding = (str: string | NativePointer, len: number = 18, pad: string = ' ', end: boolean = true) => {
+export const padding = (str: string | NativePointer, len: number = 25, pad: string = ' ', end: boolean = true) => {
     if (str instanceof NativePointer) str = str.toString()
     if (str.length >= len) return str
     if (end) return str.padEnd(len, pad)
@@ -72,7 +61,7 @@ export const packApiResove = (patter: string = "exports:*!*Unwind*") => {
 
 export const getMainThreadId = () => {
     let retId = -1
-    let semaphore = new Semaphore()
+    const semaphore = new Semaphore()
     Java.scheduleOnMainThread(() => {
         retId = Process.getCurrentThreadId()
         semaphore.post()
@@ -100,5 +89,4 @@ globalThis.padding = padding
 globalThis.newLine = newLine
 globalThis.getThreadName = getThreadName
 globalThis.getMainThreadId = getMainThreadId
-globalThis.filterDuplicateOBJ = filterDuplicateOBJ
 globalThis.demangleName = demangleName
