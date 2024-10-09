@@ -1,6 +1,9 @@
 Easy Use： 
 frida --codeshare axhlzy/fridadebugger -U -f ${PackageName}
 
+先执行一下根目录的 prepare.ps1 准备一下环境
+然后正常附加即可
+
 - 在arm64实现了基本的单个断点的步过和继续
 
 1. b(functionaddress)
@@ -25,7 +28,7 @@ idea:
  将编译出来的so文件base64编码在js脚本中，运行时解出来再使用frida的load将动态库加载进去
 
 todo: 
- 平栈解析
+平栈解析
  ...
 
 每一步的执行都将被记录
@@ -36,8 +39,11 @@ todo:
 
 --- 
 
-![bt](https://github.com/axhlzy/FridaDebugger/blob/main/images/bt.png)
+<img width="1216" alt="bt" src="https://github.com/user-attachments/assets/9396121a-d09b-4b1b-8c35-0a1046308793">
 
-![si](https://github.com/axhlzy/FridaDebugger/blob/main/images/si.png)
+<img width="1290" alt="si" src="https://github.com/user-attachments/assets/cf4bf15d-2629-4c5d-a425-df87c19bbb80">
 
-![debug](https://github.com/axhlzy/FridaDebugger/blob/main/images/debug.png)
+![debug](https://github.com/user-attachments/assets/60bad0a5-4124-41b7-bc63-e26ad5777b31)
+
+![dism](https://github.com/user-attachments/assets/7dbb7311-a6fe-423a-a6e6-49d9c8e9e79e)
+
