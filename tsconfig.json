@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "allowJs": true, 
-    "noEmit": true,
-    "strict": false,
-    "esModuleInterop": true,
-    "moduleResolution": "node16",
-    "module": "Node16"
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "types": ["frida-gum", "node"],
+    "strict": true,
+    "noEmit": true
   },
-  "exclude": ["_agent.js"]
+  "include": ["agent/**/*.ts"]
 }

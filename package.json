@@ -1,26 +1,22 @@
 {
-  "name": "frida-native-debugger",
+  "name": "frida-stalker-breakpoint-agent",
   "version": "1.0.0",
-  "description": "Single-step debugging of native code using frida, talker, and semaphore",
-  "private": false,
-  "main": "agent/main.ts",
+  "description": "Frida agent written in TypeScript",
+  "private": true,
+  "main": "agent/index.ts",
+  "type": "module",
   "scripts": {
     "prepare": "npm run build",
-    "build": "frida-compile agent/main.ts -o _agent.js -c",
-    "watch": "frida-compile agent/main.ts -o _agent.js -w"
+    "build": "frida-compile agent/index.ts -o _agent.js -c",
+    "watch": "frida-compile agent/index.ts -o _agent.js -w",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/frida-gum": "^18.3.1",
-    "@types/node": "^18.15.3",
-    "frida-compile": "^16.4.1"
+    "@types/frida-gum": "^19.6.0",
+    "@types/node": "^18.14.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "class-transformer": "^0.5.1",
-    "frida-il2cpp-bridge": "0.9.1",
-    "frida-stack": "^1.0.0",
-    "lodash": "^4.17.21",
-    "pretty-format": "^29.7.0",
-    "serializr": "^3.0.2",
-    "ts-transformer-inline-file": "^0.2.0"
+    "frida-il2cpp-bridge": "^0.13.1"
   }
 }

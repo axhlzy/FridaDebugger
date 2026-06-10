@@ -1,7 +1,0 @@
-import './ParserBase.js'
-import './ArtParser.js'
-import './DynamicParser.js'
-import './SymbolParser.js'
-import './StructParser.js'
-import './Il2cppParser.js'
-import './StringParser.js'
