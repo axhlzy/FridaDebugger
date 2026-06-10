@@ -1,7 +1,5 @@
 # Frida Stalker Breakpoint
 
-Minimal TypeScript Frida agent created with `frida-create`.
-
 `b(address)` installs an `Interceptor.attach()` listener. When the address is
 hit, the listener starts Stalker on the current thread. Stalker callouts print
 registers and pause the thread through a libc semaphore.
